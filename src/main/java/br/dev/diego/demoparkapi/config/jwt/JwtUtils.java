@@ -22,7 +22,7 @@ public class JwtUtils {
     private final static long EXPIRE_HOURS = 0;
     private final static long EXPIRE_MINUTES = 2;
 
-    public JwtToken generateJwtToken(String username, String role) {
+    public static JwtToken generateJwtToken(String username, String role) {
         Date issuedAt = new Date();
         Date expirationDate = generateExpirationDate(issuedAt);
 
