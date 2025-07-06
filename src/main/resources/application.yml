@@ -1,0 +1,16 @@
+# LOCALE
+spring:
+  web:
+    locale-resolver: fixed
+    locale: pt_BR
+  profiles:
+    active: ${APP_PROFILE:test}
+  jpa:
+    open-in-view: false
+
+springdoc:
+  swagger-ui:
+    path: /docs-park.html
+  api-docs:
+    path: /docs-park
+  packagesToScan: com.mballem.demoparkapi.web.controller
