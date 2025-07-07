@@ -43,7 +43,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario editarSenha(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
+    public void editarSenha(Long id, String senhaAtual, String novaSenha, String confirmaSenha) {
         if (!novaSenha.equals(confirmaSenha)) {
             throw new PasswordInvalidException("Nova senha não confere com confirmação de senha.");
         }
@@ -54,7 +54,7 @@ public class UsuarioService {
         }
 
         user.setPassword(passwordEncoder.encode(novaSenha));
-        return user;
+
     }
 
     @Transactional(readOnly = true)
