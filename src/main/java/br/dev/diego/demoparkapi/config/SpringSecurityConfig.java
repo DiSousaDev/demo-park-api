@@ -1,5 +1,6 @@
 package br.dev.diego.demoparkapi.config;
 
+import br.dev.diego.demoparkapi.config.jwt.JwtAuthenticationEntryPoint;
 import br.dev.diego.demoparkapi.config.jwt.JwtAuthorizationFilter;
 import br.dev.diego.demoparkapi.config.jwt.JwtUserDetailsService;
 import br.dev.diego.demoparkapi.config.jwt.JwtUtils;
@@ -42,6 +43,10 @@ public class SpringSecurityConfig {
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(
+                        exceptionHandling ->
+                                exceptionHandling.authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                )
                 .build();
     }
 
