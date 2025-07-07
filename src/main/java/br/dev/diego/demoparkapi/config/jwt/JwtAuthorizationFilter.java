@@ -10,17 +10,18 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@Component
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    private final JwtUserDetailsService jwtUserDetailsService;
+    private JwtUserDetailsService jwtUserDetailsService;
+
+    public JwtAuthorizationFilter() {
+    }
 
     public JwtAuthorizationFilter(JwtUserDetailsService jwtUserDetailsService) {
         this.jwtUserDetailsService = jwtUserDetailsService;
@@ -30,19 +31,19 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = request.getHeader("Authorization");
 
-        if(token == null || !token.startsWith("Bearer ")) {
+        if (token == null || !token.startsWith("Bearer ")) {
             LOGGER.warn("Token de autorização não encontrado ou inválido");
             filterChain.doFilter(request, response);
             return;
         }
-        if(!JwtUtils.isTokenValid(token)) {
+        if (!JwtUtils.isTokenValid(token)) {
             LOGGER.warn("Token de autorização inválido");
             filterChain.doFilter(request, response);
             return;
         }
 
         String username = JwtUtils.getUsernameFromToken(token);
-        if(username == null) {
+        if (username == null) {
             LOGGER.warn("Nome de usuário não encontrado no token");
             filterChain.doFilter(request, response);
             return;

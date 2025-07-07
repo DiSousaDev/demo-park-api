@@ -22,12 +22,14 @@ import java.util.List;
 
 @Tag(name = "Usuarios", description = "Contém todas as operações relativas aos recursos para cadastro, edição e leitura de um usuário.")
 @RestController
-@RequestMapping("api/v1/usuarios")
+@RequestMapping("/usuarios")
 public class UsuarioController {
 
+    private final UsuarioMapper usuarioMapper;
     private final UsuarioService usuarioService;
 
-    public UsuarioController(UsuarioService usuarioService) {
+    public UsuarioController(UsuarioMapper usuarioMapper, UsuarioService usuarioService) {
+        this.usuarioMapper = usuarioMapper;
         this.usuarioService = usuarioService;
     }
 
@@ -42,8 +44,8 @@ public class UsuarioController {
             })
     @PostMapping
     public ResponseEntity<UsuarioResponseDto> create(@Valid @RequestBody UsuarioCreateDto createDto) {
-        Usuario user = usuarioService.salvar(UsuarioMapper.toUsuario(createDto));
-        return ResponseEntity.status(HttpStatus.CREATED).body(UsuarioMapper.toDto(user));
+        Usuario user = usuarioService.salvar(usuarioMapper.toUsuario(createDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toDto(user));
     }
 
     @Operation(summary = "Recuperar um usuário pelo id", description = "Recuperar um usuário pelo id",
@@ -56,7 +58,7 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<UsuarioResponseDto> getById(@PathVariable Long id) {
         Usuario user = usuarioService.buscarPorId(id);
-        return ResponseEntity.ok(UsuarioMapper.toDto(user));
+        return ResponseEntity.ok(usuarioMapper.toDto(user));
     }
 
     @Operation(summary = "Atualizar senha", description = "Atualizar senha",
@@ -85,6 +87,6 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<List<UsuarioResponseDto>> getAll() {
         List<Usuario> users = usuarioService.buscarTodos();
-        return ResponseEntity.ok(UsuarioMapper.toListDto(users));
+        return ResponseEntity.ok(usuarioMapper.toListDto(users));
     }
 }

@@ -3,32 +3,18 @@ package br.dev.diego.demoparkapi.web.dto.mapper;
 import br.dev.diego.demoparkapi.entity.Usuario;
 import br.dev.diego.demoparkapi.web.dto.UsuarioCreateDto;
 import br.dev.diego.demoparkapi.web.dto.UsuarioResponseDto;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
+import org.mapstruct.Mapper;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UsuarioMapper {
+@Mapper(componentModel = "spring")
+public interface UsuarioMapper {
 
-    public static Usuario toUsuario(UsuarioCreateDto createDto) {
-        return new ModelMapper().map(createDto, Usuario.class);
-    }
+    Usuario toUsuario(Usuario usuario);
 
-    public static UsuarioResponseDto toDto(Usuario usuario) {
-        String role = usuario.getRole().name().substring("ROLE_".length());
-        PropertyMap<Usuario, UsuarioResponseDto> props = new PropertyMap<Usuario, UsuarioResponseDto>() {
-            @Override
-            protected void configure() {
-                map().setRole(role);
-            }
-        };
-        ModelMapper mapper = new ModelMapper();
-        mapper.addMappings(props);
-        return mapper.map(usuario, UsuarioResponseDto.class);
-    }
+    UsuarioResponseDto toDto(Usuario usuario);
 
-    public static List<UsuarioResponseDto> toListDto(List<Usuario> usuarios) {
-        return usuarios.stream().map(user -> toDto(user)).collect(Collectors.toList());
-    }
+    Usuario toUsuario(UsuarioCreateDto usuarioCreateDto);
+
+    List<UsuarioResponseDto> toListDto(List<Usuario> usuarios);
 }
