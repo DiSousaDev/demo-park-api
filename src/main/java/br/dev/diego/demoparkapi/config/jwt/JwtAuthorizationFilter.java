@@ -19,9 +19,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
     private final JwtUserDetailsService jwtUserDetailsService;
+    private final JwtUtils jwtUtils;
 
-    public JwtAuthorizationFilter(JwtUserDetailsService jwtUserDetailsService) {
+    public JwtAuthorizationFilter(JwtUserDetailsService jwtUserDetailsService, JwtUtils jwtUtils) {
         this.jwtUserDetailsService = jwtUserDetailsService;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -33,13 +35,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if (!JwtUtils.isTokenValid(token)) {
+        if (!jwtUtils.isTokenValid(token)) {
             LOGGER.warn("Token de autorização inválido");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String username = JwtUtils.getUsernameFromToken(token);
+        String username = jwtUtils.getUsernameFromToken(token);
         if (username == null) {
             LOGGER.warn("Nome de usuário não encontrado no token");
             filterChain.doFilter(request, response);

@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final UsuarioService usuarioService;
+    private final JwtUtils jwtUtils;
 
-    public JwtUserDetailsService(UsuarioService usuarioService) {
+    public JwtUserDetailsService(UsuarioService usuarioService, JwtUtils jwtUtils) {
         this.usuarioService = usuarioService;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     public JwtToken getTokenAuthenticated(String username) {
         Role role = usuarioService.buscarRolePorUsername(username);
-        return JwtUtils.generateJwtToken(username, role.name().substring("ROLE_".length()));
+        return jwtUtils.generateJwtToken(username, role.name().substring("ROLE_".length()));
     }
 
 }

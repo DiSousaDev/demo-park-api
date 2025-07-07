@@ -14,3 +14,10 @@ spring:
       hibernate:
         format_sql: true
     defer-datasource-initialization: true
+  jwt:
+    secret: "u7F!k9zP2sQw4eR8tYxC1vB3nM5aL6dJ"
+    prefix: "Bearer "
+    expire:
+      days: 0
+      hours: 0
+      minutes: 30

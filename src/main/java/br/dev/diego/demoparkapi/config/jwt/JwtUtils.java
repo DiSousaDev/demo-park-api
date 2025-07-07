@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -13,16 +14,18 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+@Component
 public class JwtUtils {
 
     private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
-    private final static String JWT_PREFIX = "Bearer ";
-    private final static String JWT_SECRET = "u7F!k9zP2sQw4eR8tYxC1vB3nM5aL6dJ";
-    private final static long EXPIRE_DAYS = 0;
-    private final static long EXPIRE_HOURS = 0;
-    private final static long EXPIRE_MINUTES = 2;
 
-    public static JwtToken generateJwtToken(String username, String role) {
+    private final JwtProperties jwtProperties;
+
+    public JwtUtils(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
+    }
+
+    public JwtToken generateJwtToken(String username, String role) {
         Date issuedAt = new Date();
         Date expirationDate = generateExpirationDate(issuedAt);
 
@@ -38,7 +41,7 @@ public class JwtUtils {
         return new JwtToken(token);
     }
 
-    public static String getUsernameFromToken(String token) {
+    public String getUsernameFromToken(String token) {
         Claims claims = getClaims(token);
         if (claims != null) {
             return claims.getSubject();
@@ -46,7 +49,7 @@ public class JwtUtils {
         return null;
     }
 
-    public static boolean isTokenValid(String token) {
+    public boolean isTokenValid(String token) {
         try {
             Jwts.parser()
                     .verifyWith(generateKey())
@@ -59,7 +62,7 @@ public class JwtUtils {
         return false;
     }
 
-    private static Claims getClaims(String token) {
+    private Claims getClaims(String token) {
         try {
             return Jwts.parser()
                     .verifyWith(generateKey())
@@ -72,20 +75,22 @@ public class JwtUtils {
         return null;
     }
 
-    private static String refactorToken(String token) {
-        if (token.contains(JWT_PREFIX)) {
-            return token.replace(JWT_PREFIX, "");
+    private String refactorToken(String token) {
+        if (token.contains(jwtProperties.getPrefix())) {
+            return token.replace(jwtProperties.getPrefix(), "");
         }
         return token;
     }
 
-    private static SecretKey generateKey() {
-        return Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+    private SecretKey generateKey() {
+        return Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
     }
 
-    private static Date generateExpirationDate(Date start) {
+    private Date generateExpirationDate(Date start) {
         LocalDateTime now = start.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-        LocalDateTime expiration = now.plusDays(EXPIRE_DAYS).plusHours(EXPIRE_HOURS).plusMinutes(EXPIRE_MINUTES);
+        LocalDateTime expiration = now.plusDays(jwtProperties.getExpireDays())
+                .plusHours(jwtProperties.getExpireHours())
+                .plusMinutes(jwtProperties.getExpireMinutes());
         return Date.from(expiration.atZone(ZoneId.systemDefault()).toInstant());
     }
 
