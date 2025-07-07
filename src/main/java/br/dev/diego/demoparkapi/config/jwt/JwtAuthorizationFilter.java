@@ -18,10 +18,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthorizationFilter.class);
 
-    private JwtUserDetailsService jwtUserDetailsService;
-
-    public JwtAuthorizationFilter() {
-    }
+    private final JwtUserDetailsService jwtUserDetailsService;
 
     public JwtAuthorizationFilter(JwtUserDetailsService jwtUserDetailsService) {
         this.jwtUserDetailsService = jwtUserDetailsService;

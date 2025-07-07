@@ -17,7 +17,7 @@ public class JwtUtils {
 
     private static final Logger log = LoggerFactory.getLogger(JwtUtils.class);
     private final static String JWT_PREFIX = "Bearer ";
-    private final static String JWT_SECRET = "demopark-api";
+    private final static String JWT_SECRET = "u7F!k9zP2sQw4eR8tYxC1vB3nM5aL6dJ";
     private final static long EXPIRE_DAYS = 0;
     private final static long EXPIRE_HOURS = 0;
     private final static long EXPIRE_MINUTES = 2;
