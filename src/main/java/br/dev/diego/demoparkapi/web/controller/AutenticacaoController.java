@@ -6,6 +6,8 @@ import br.dev.diego.demoparkapi.web.dto.UsuarioLoginDto;
 import br.dev.diego.demoparkapi.web.exception.ErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,13 +18,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.logging.Logger;
-
 @RestController
 @RequestMapping("/auth")
 public class AutenticacaoController {
 
-    private static final Logger LOGGER = Logger.getLogger(AutenticacaoController.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoController.class);
 
     private final JwtUserDetailsService jwtUserDetailsService;
     private final AuthenticationManager authenticationManager;
@@ -42,10 +42,10 @@ public class AutenticacaoController {
             authenticationManager.authenticate(authenticationToken);
 
             JwtToken jwtToken = jwtUserDetailsService.getTokenAuthenticated(usuarioLoginDto.username());
-            LOGGER.info("Autenticação bem-sucedida para o usuário: " + usuarioLoginDto.username());
+            LOGGER.info("Autenticação bem-sucedida para o usuário: {}", usuarioLoginDto.username());
             return ResponseEntity.ok(jwtToken);
         } catch (AuthenticationException e) {
-            LOGGER.severe("Falha na autenticação para o usuário: " + usuarioLoginDto.username() + " - " + e.getMessage());
+            LOGGER.error("Falha na autenticação para o usuário: {} - {}", usuarioLoginDto.username(), e.getMessage());
         }
         return ResponseEntity
                 .badRequest()
